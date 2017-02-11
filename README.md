@@ -1,7 +1,9 @@
 # Dynamic Webpages
 
 ## Introduction
-This is a dynamic webpage that presents our collecting-datas timely in one of my research named __3D-AQImaps Building by UAV Sensing__. It consists of client, server and database. ~~Somehow it's not copmplete because I'M STILL WORKING ON IT...~~
+This is a dynamic webpage that presents our collecting-datas timely in one of my research named ___3D-AQImaps Building by UAV Sensing___.
+
+It consists of client, server and database. ~~Somehow it's not copmplete because I'M STILL WORKING ON IT...~~
 
 ## Client
 > The client is implemented by HTML/CSS and javascript. Of course we use _Bootstrap_ and _jQuery_ to simplify the process.
@@ -17,11 +19,12 @@ This is a dynamic webpage that presents our collecting-datas timely in one of my
 ```SQL
 $ source *your filepath*.sql
 ```
-2. Start your server realized by Node.js.
+* Start your server realized by Node.js.
 ```javascript
 $ node server.js
 ```
 
 ## Link
-[Yuzhe's Homepage](https://aqimaps.com/)
+[AQI Maps in Peking Univeristy](https://aqimaps.com/)
+
 __Attention:__ The website may not be accessible now.
