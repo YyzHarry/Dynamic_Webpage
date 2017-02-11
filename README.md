@@ -15,7 +15,7 @@ It consists of client, server and database. ~~Somehow it's not copmplete because
 > The database I use is MySQL. It's easy and free to establish your databases through MySQL. 
 
 ## Usage
-1. Run your __xx.sql__ file to establish your databases. Notice that you should first add your contents into your databases/tables.
+* Run your __xx.sql__ file to establish your databases. Notice that you should first add your contents into your databases/tables.
 ```SQL
 $ source *your filepath*.sql
 ```
