@@ -3,7 +3,7 @@
 ## Introduction
 This is a dynamic webpage that presents our collecting-datas timely in one of my research named ___3D-AQImaps Building by UAV Sensing___.
 
-It consists of client, server and database. ~~Somehow it's not copmplete because I'M STILL WORKING ON IT...~~
+It consists of client, server and database. ~~Somehow it's not complete because I'M STILL WORKING ON IT...~~
 
 ## Client
 > The client is implemented by HTML/CSS and javascript. Of course we use _Bootstrap_ and _jQuery_ to simplify the process.
