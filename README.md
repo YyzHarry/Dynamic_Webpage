@@ -25,6 +25,6 @@ $ node server.js
 ```
 
 ## Link
-[AQI Maps in Peking Univeristy](https://www.aqimaps.com/)
+[AQI Maps in Peking Univeristy](www.aqimaps.com)
 
 __Attention:__ The website is not complete now and still needs some works.
