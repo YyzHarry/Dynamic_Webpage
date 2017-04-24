@@ -1,7 +1,10 @@
 # Dynamic Webpages
 
 ## Introduction
+<!--
 This is a dynamic webpage that presents our collecting-datas timely in one of my research named ___3D-AQImaps Building by UAV Sensing___.
+-->
+This is now served as a project for a junior course __Computer Networks__.
 
 It consists of client, server and database.  ~~Somehow it's not complete because I'M STILL WORKING ON IT...~~
 
@@ -25,6 +28,6 @@ $ node server.js
 ```
 
 ## Link
-[AQI Maps in Peking Univeristy](www.aqimaps.com)
+[AQI Maps in Peking Univeristy](aqimaps.com)
 
 __Attention:__ The website is not complete now and still needs some works.
