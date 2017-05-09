@@ -6,7 +6,7 @@
                                                    maximum-scale=1.0,
                                                    user-scalable=no">
 
-    <title>AQI_Maps in PKU</title>
+    <title>Realtime AQI Maps in China</title>
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -41,7 +41,7 @@
       #center {margin-right: auto; margin-left: auto;}
       p{margin-left:5px; font-size:14px;}
     </style>
-    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=8eewclsuZLaIKiIMOdbWK59drLfAyr1a"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=jSttbYBaIcGDuttG96O2AO8USz9uG6wo"></script>
     <!-- <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script> -->
 
   </head>
@@ -63,11 +63,17 @@
             <strong><span style="font-family: Georgia;">Home</span></strong>
           </button>
         </a>
+
+        <a class="navbar-text navbar-link navbar-left" href="./pkuaqi.html">
+          <button class="btn btn-default btn-sm" role="button">
+            <strong><span style="font-family: Georgia;">3D AQI Maps in PKU</span></strong>
+          </button>
+        </a>
         
         <a class="navbar-right" href="http://www.pku.edu.cn/" target="_blank"><img src="img/pku.jpg"></a>
 
         <div class="navbar-right navbar-text">
-          <b><p style="font-family: Georgia; font-size: 16px; color: #333">Aqimaps in Peking University&nbsp;&nbsp;&nbsp;</p></b>
+          <b><p style="font-family: Georgia; font-size: 16px; color: #333">Realtime Aqi Map in China&nbsp;&nbsp;&nbsp;</p></b>
         </div>
       </div>
     </header>
@@ -78,65 +84,37 @@
       </div>
   
       <script type="text/javascript">
-        // 百度地图API功能
-        var map = new BMap.Map("allmap");
+          // 百度地图API功能
+          var map = new BMap.Map("allmap");    // 创建Map实例
+          map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
+          map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+          map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+          map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+    
+          function showInfo(e){
+            //alert(e.point.lng + "," + e.point.lat);
+        
+            var point = new BMap.Point(e.point.lng, e.point.lat);
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+        
+            var url = "aqi.py?lat="+e.point.lat+"&lng="+e.point.lng;
+            //alert(url);
 
-        map.enableScrollWheelZoom();   //启用滚轮放大缩小
-        map.enableContinuousZoom();   //启用地图惯性拖拽
+            $.get(url,function(data,status){
+              
+              //alert("数据：" + data + "\n状态：" + status);
 
-        /*
-        //中心点
-        var point = new BMap.Point(116.316176,39.997743);
-        var marker = new BMap.Marker(point);  // 创建标注
-        map.addOverlay(marker);              // 将标注添加到地图中
-        */
-        map.centerAndZoom(new BMap.Point(116.316176,39.997743), 16);
+              var obj = eval('('+data+')');
+              var aqi = obj.aqi;
+              var sConent = "<h4>AQI "+aqi+"</h4><img src='http://t.eecser.com/image/"+obj.image+"' width='139'  height='104' />";
+              var infoWindow = new BMap.InfoWindow(sConent);
+              marker.openInfoWindow(infoWindow);
+            });
 
-        /*
-        var opts = {
-          width : 200,     // 信息窗口宽度
-          height: 100,     // 信息窗口高度
-          title : "Peking University", // 信息窗口标题
-          enableMessage:true,//设置允许信息窗发送短息
-          message:""
-        }
-        var infoWindow = new BMap.InfoWindow("地址：北京市海淀区颐和园路5号", opts);  // 创建信息窗口对象 
-        marker.addEventListener("click", function(){          
-          map.openInfoWindow(infoWindow,point); //开启信息窗口
-        });
-        */
+          }
 
-        var data_info = [[116.319421,39.99547,"二教"],
-                         [116.317948,39.992485,"南门"],
-                         [116.311067,40.000707,"西门"],
-                         [116.317022,39.997895,"图书馆"],
-                         [116.321765,39.994544,"邱德拔"],
-                         [116.317094,39.995905,"百讲"],
-                         [116.316748,40.000545,"未名湖"]
-                        ];
-        var opts = {
-            width : 200,     // 信息窗口宽度
-            height: 50,     // 信息窗口高度
-            title : "AQI_Maps in Peking University" , // 信息窗口标题
-            enableMessage:true//设置允许信息窗发送短息
-        };
-        for(var i=0;i<data_info.length;i++){
-          var marker = new BMap.Marker(new BMap.Point(data_info[i][0],data_info[i][1]));  // 创建标注
-          var content = data_info[i][2];
-          map.addOverlay(marker);               // 将标注添加到地图中
-          addClickHandler(content,marker);
-        }
-        function addClickHandler(content,marker){
-          marker.addEventListener("click",function(e){
-            openInfo(content,e)}
-          );
-        }
-        function openInfo(content,e){
-          var p = e.target;
-          var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-          var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象 
-          map.openInfoWindow(infoWindow,point); //开启信息窗口
-        }
+          map.addEventListener("click", showInfo);
 
       </script>
 
