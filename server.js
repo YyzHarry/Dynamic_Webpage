@@ -13,6 +13,9 @@ var assert = require('assert');
 var ts = require('time-stamp');
 var hasha = require('hasha');
 
+// Combine Node.js Server & Python Server
+var exec = require('child_process').exec;
+
 
 // 数据库模块
 var mysql = require('mysql');
@@ -95,6 +98,31 @@ app.get('/index_query_district', function (req, res) {
   });
 
 })
+
+
+
+// 服务器监听地图点击事件
+app.get('/aqi.py', function(req, res){
+    // lat & lng
+  var arg1 = req.query.lat;
+  var arg2 = req.query.lng;
+
+  exec('python aqi.py '+ arg1+' '+arg2+' ', function(error,stdout,stderr){
+    // try lat and lng 
+    //console.log(req.query.lat);
+    //console.log(req.query.lng);
+
+    if(error){
+        console.info('stderr : '+stderr);
+    }else{
+        // try lat and lng 
+        console.log('查询地点经纬度为 ('+req.query.lat+','+req.query.lng+')');
+    }    
+
+  });
+
+});
+
 
 
 // 服务器监听端口8081
