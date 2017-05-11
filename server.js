@@ -102,27 +102,33 @@ app.get('/index_query_district', function (req, res) {
 
 
 // 服务器监听地图点击事件
-app.get('/aqi.py', function(req, res){
+app.get('/aqi_js.py', function(req, res){
     // lat & lng
   var arg1 = req.query.lat;
   var arg2 = req.query.lng;
+  var arg3 = req.query.district;
 
-  exec('python aqi.py '+ arg1+' '+arg2+' ', function(error,stdout,stderr){
+  exec('python aqi_js.py '+ arg1+' '+arg2+' '+arg3+' ', function(error,stdout,stderr){
     // try lat and lng 
     //console.log(req.query.lat);
     //console.log(req.query.lng);
-
+    //console.log(req.query.district);
     if(error){
         console.info('stderr : '+stderr);
     }else{
-        // try lat and lng 
-        console.log('查询地点经纬度为 ('+req.query.lat+','+req.query.lng+')');
-    }    
+        //console.log('查询地点的经纬度和区域为 ('+req.query.lat+','+req.query.lng+','+req.query.district+')');
+
+        //get JSON from python
+        var data = JSON.parse(stdout);
+        console.log(data);
+
+        // send response to client
+        res.end(JSON.stringify(data));
+    }
 
   });
 
 });
-
 
 
 // 服务器监听端口8081
