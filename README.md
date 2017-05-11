@@ -11,10 +11,12 @@ The project now serves as a demo for a junior course __Computer Networking__.
 It consists of client, server and database.  ~~Somehow it's not complete because I'M STILL WORKING ON IT...~~
 
 ## Client
-The client is implemented by HTML/CSS and javascript. Of course we use _Bootstrap_ and _jQuery_ to simplify the process.
+The client is implemented by HTML/CSS and javascript. We use _Bootstrap_ and _jQuery_ to simplify the process.
 
 ## Server
-The server is coded by Node.js and Express. 
+The server is coded by Node.js and Express, as well as Python.
+
+__Update__: We add ___Python___ files to real-timely scrape AQI data from _Moji_.
 
 ## Database
 The database I use is MySQL. It's easy and free to establish your databases through MySQL. 
