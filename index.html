@@ -110,6 +110,11 @@
             var point = new BMap.Point(e.point.lng, e.point.lat);
             var marker = new BMap.Marker(point);
             map.addOverlay(marker);
+
+            // Delete old marker
+            if(oldmarker != null)
+              oldmarker.remove();
+            oldmarker = marker;
         
             var url = "aqi_js.py?lat="+e.point.lat+"&lng="+e.point.lng;
             //alert(url);
@@ -138,9 +143,7 @@
                               + "Street: " + addComp.street + "</p>" + "</div>";
                 var infoWindow = new BMap.InfoWindow(sConent);
                 marker.openInfoWindow(infoWindow);
-                if(oldmarker != null)
-                  oldmarker.remove();
-                oldmarker = marker;
+
               });
 
             });
