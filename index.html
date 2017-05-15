@@ -102,7 +102,7 @@
           //map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
           map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
     
-          var oldmarker=null; 
+          var oldmarker = null; 
 
           function showInfo(e){
             //alert(e.point.lng + "," + e.point.lat);
@@ -136,7 +136,7 @@
                 var aqi = obj.aqi;
                 // alert(aqi);
                 // alert(obj.province);
-                var sConent = "<h4 style='margin:0 0 5px 0; padding:0.2em 0'>AQI " + aqi + "</h4><div style='height:auto; width:300px;'>"
+                var sConent = "<h4 style='margin:0 0 5px 0; padding:0.2em 0'>AQI " + aqi + "</h4><div style='height:auto; width:270px;'>"
                               + "<img style='float:right; margin:0px' src='" + obj.image + "' width='139' height='104' />"
                               + "<p style='margin:0; font-size:13px; line-height:1.5; float:left'> City: " + addComp.city + "<br />"
                               + "District: " + addComp.district + "<br />"
@@ -149,8 +149,6 @@
             });
             /*
             $.get(url,function(data,status){
-              
-              //alert("数据：" + data + "\n状态：" + status);
 
               var obj = eval('('+data+')');
               var aqi = obj.aqi;
@@ -162,6 +160,64 @@
           }
 
           map.addEventListener("click", showInfo);
+
+
+
+          // 关键字提示输入功能，同时显示AQI value
+
+          function G(id){
+            return document.getElementById(id);
+          }
+
+          var ac = new BMap.Autocomplete({     // 建立一个自动完成的对象
+            "input" : "suggestId",
+            "location" : map
+          });
+
+          ac.addEventListener("onhighlight", function(e){  // 鼠标放在下拉列表上的事件
+            var str = "";
+            var _value = e.fromitem.value;
+            var value = "";
+
+            if(e.fromitem.index > -1){
+              value = _value.province + _value.city + _value.district + _value.street + _value.business;
+            }    
+            str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+            
+            value = "";
+            if(e.toitem.index > -1){
+              _value = e.toitem.value;
+              value = _value.province + _value.city + _value.district + _value.street + _value.business;
+            }    
+            str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+            G("searchResultPanel").innerHTML = str;
+          });
+
+          var myValue;
+
+          ac.addEventListener("onconfirm", function(e){    // 鼠标点击下拉列表后的事件
+            var _value = e.item.value;
+            myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+            G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+            
+            setPlace();
+          });
+
+          function setPlace(){
+            map.clearOverlays();    // 清除地图上所有覆盖物
+            function myFun(){
+              var pp = local.getResults().getPoi(0).point;    // 获取第一个智能搜索的结果
+              map.centerAndZoom(pp, 15);
+              map.addOverlay(new BMap.Marker(pp));
+
+              alert(pp.lng + "," + pp.lat);
+              //showInfo(pp);
+            }
+            var local = new BMap.LocalSearch(map, {   // 智能搜索
+              onSearchComplete: myFun
+            });
+            local.search(myValue);
+          }
 
       </script>
 
@@ -208,11 +264,15 @@
 
     <div class="container" role="search">
       <form id="query_form" class="form-inline row well well-sm" role="form">
-        <div class="form-group col-md-offset-1 col-md-2 col-sm-offset-1 col-sm-3">
-          <p class="form-control-static">地点</p>
+        <div class="form-group" style="text-align: center;">
+          <p class="form-control-static">请输入查询地点</p>
+          <input type="text" class="form-control" id="suggestId">
+          <div id="searchResultPanel" style="border:1px solid #C0C0C0; width: 150px; height: auto; display: none;"></div>
+          <!--
           <select id="district_select" class="form-control" name="district">
-          </select>
+          </select>-->
         </div>
+        <!--
         <div class="form-group col-md-offset-2 col-md-2 col-sm-offset-1 col-sm-3">
           <p class="form-control-static">查询方式</p>
           <select id="type_select" class="form-control" name="type">
@@ -222,7 +282,7 @@
         </div>
         <div class="form-group col-md-offset-4 col-md-1 col-sm-offset-1 col-sm-1">
           <button id="query_btn" type="button" class="btn btn-info">查询</button>
-        </div>
+        </div>-->
       </form>
     </div>
     <div class="container">
