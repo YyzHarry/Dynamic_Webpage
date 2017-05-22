@@ -8,6 +8,7 @@ function render_district(district_item) {
 }
 
 //渲染AQI参数表
+/*
 function render_aqi(dp) {
   var $div = $('<div></div>');
 
@@ -18,10 +19,9 @@ function render_aqi(dp) {
 
   var img = '<img class="img-responsive center-block" src="img/' + dp.district_name + '.jpg" align="middle" width="450px" height="300px" alt="' + dp.district_name + '"/>';
 
-  //var form = '<table class="container table-bordered">' + '<thead class="bg-danger">' + '<tr>' + '<th>一氧化碳/CO</th> <th>二氧化硫/SO2</th> <th>臭氧/O3</th> <th>一氧化氮/NO</th> <th>PM1.0</th> <th>PM2.5</th> <th>PM10</th></tr></thead>'
+  //var form = '<table class="table table-bordered">' + '<thead>' + '<tr>' + '<th>一氧化碳/CO</th> <th>二氧化硫/SO2</th> <th>臭氧/O3</th> <th>一氧化氮/NO</th> <th>PM1.0</th> <th>PM2.5</th> <th>PM10</th></tr></thead>'
   //           + '<tbody> <tr class="success"> <td>' + dp.CO + '</td><td>' + dp.SO2 +'</td><td>' + dp.O3 + '</td><td>' + dp.NO + '</td><td>' + dp.PM1 + '</td><td>' + dp.PM2 + '</td><td>' + dp.PM10 + '</td></tr></tbody></table>';
-  var form = '<table class="table table-bordered">' + '<thead>' + '<tr>' + '<th>一氧化碳/CO</th> <th>二氧化硫/SO2</th> <th>臭氧/O3</th> <th>一氧化氮/NO</th> <th>PM1.0</th> <th>PM2.5</th> <th>PM10</th></tr></thead>'
-             + '<tbody> <tr class="success"> <td>' + dp.CO + '</td><td>' + dp.SO2 +'</td><td>' + dp.O3 + '</td><td>' + dp.NO + '</td><td>' + dp.PM1 + '</td><td>' + dp.PM2 + '</td><td>' + dp.PM10 + '</td></tr></tbody></table>';
+  var form = '<p>楼层是' + dp.stair + ', AQI是' + dp.aqi_value + '</p>';
 
   var link = '<div class="form-group col-sm-offset-5 col-sm-2 col-md-offset-5 col-md-2"><a href="./index.html"><button class="btn btn-warning form-control" type="button">返回</button></a></div>';
   
@@ -30,7 +30,7 @@ function render_aqi(dp) {
   $('#display').append($div);
 }
 
-/*
+
 function render_product(product) {
   var $div = $('<div></div>');
   $div.attr('style',"width:20%;height:350px;");
@@ -83,15 +83,14 @@ function query_district(){
         console.error('查询地点参数信息错误');
         return;
       }
-      //音效提示
+      // 音效提示
       success('成功查询到地点AQI');
-      //成功查询到地点AQI
+      /* 成功查询到地点AQI
       $('#display').empty();
       $('#display').attr('district_id',district_id);
-
-      for (var i in dp_list) {
-        render_aqi(dp_list[i]);
-      }
+      */
+      render_aqi(dp_list);
+      
       //$('#display div h4').addClass('list-group-item-heading');
       //$('#display div address').addClass('list-group-item-text');
       //$('#display div p').addClass('list-group-item-text');
