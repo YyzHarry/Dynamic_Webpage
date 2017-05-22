@@ -37,7 +37,7 @@
     <style type="text/css">
       body {width: 100%;  height: 100%; font-family:"微软雅黑"; text-align: center;}
       html {width: 100%;  height: 100%; font-family:"微软雅黑"; text-align: center;}
-      #allmap {width:100%; height:400px;}
+      #allmap {width:100%; height:450px;}
       #center {margin-right: auto; margin-left: auto;}
       p{margin-left:5px; font-size:14px;}
     </style>
@@ -78,65 +78,150 @@
       </div>
   
       <script type="text/javascript">
-        // 百度地图API功能
-        var map = new BMap.Map("allmap");
+          // 百度地图API功能
+          var map = new BMap.Map("allmap");    // 创建Map实例
+          map.centerAndZoom(new BMap.Point(116.316176,39.997743), 16);  // 初始化地图,设置中心点坐标和地图级别
 
-        map.enableScrollWheelZoom();   //启用滚轮放大缩小
-        map.enableContinuousZoom();   //启用地图惯性拖拽
+          // District info
+          var data_info = [[116.317094,39.995905,"百讲"],
+                           [116.319421,39.99547,"二教"],
+                           [116.317948,39.992485,"南门"],
+                           [116.311067,40.000707,"西门"],
+                           [116.317022,39.997895,"图书馆"],
+                           [116.321765,39.994544,"邱德拔"],
+                           [116.316748,40.000545,"未名湖"]
+                          ];
+          
 
-        /*
-        //中心点
-        var point = new BMap.Point(116.316176,39.997743);
-        var marker = new BMap.Marker(point);  // 创建标注
-        map.addOverlay(marker);              // 将标注添加到地图中
-        */
-        map.centerAndZoom(new BMap.Point(116.316176,39.997743), 16);
+          map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+          //map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+          map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+    
+          var oldmarker = null;
 
-        /*
-        var opts = {
-          width : 200,     // 信息窗口宽度
-          height: 100,     // 信息窗口高度
-          title : "Peking University", // 信息窗口标题
-          enableMessage:true,//设置允许信息窗发送短息
-          message:""
-        }
-        var infoWindow = new BMap.InfoWindow("地址：北京市海淀区颐和园路5号", opts);  // 创建信息窗口对象 
-        marker.addEventListener("click", function(){          
-          map.openInfoWindow(infoWindow,point); //开启信息窗口
-        });
-        */
 
-        var data_info = [[116.319421,39.99547,"二教"],
-                         [116.317948,39.992485,"南门"],
-                         [116.311067,40.000707,"西门"],
-                         [116.317022,39.997895,"图书馆"],
-                         [116.321765,39.994544,"邱德拔"],
-                         [116.317094,39.995905,"百讲"],
-                         [116.316748,40.000545,"未名湖"]
-                        ];
-        var opts = {
-            width : 200,     // 信息窗口宽度
-            height: 50,     // 信息窗口高度
-            title : "AQI_Maps in Peking University" , // 信息窗口标题
-            enableMessage:true//设置允许信息窗发送短息
-        };
-        for(var i=0;i<data_info.length;i++){
-          var marker = new BMap.Marker(new BMap.Point(data_info[i][0],data_info[i][1]));  // 创建标注
-          var content = data_info[i][2];
-          map.addOverlay(marker);               // 将标注添加到地图中
-          addClickHandler(content,marker);
-        }
-        function addClickHandler(content,marker){
-          marker.addEventListener("click",function(e){
-            openInfo(content,e)}
-          );
-        }
-        function openInfo(content,e){
-          var p = e.target;
-          var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-          var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象 
-          map.openInfoWindow(infoWindow,point); //开启信息窗口
-        }
+
+          // Show info: 若点击区域在P大外部，则和index中相同，通过调用python得到实时AQI值+图片
+          //            若点击区域在P大内部，则直接找到data_info最近的，传ajax给server
+          function showInfo(e){
+            var pt = e.point;
+            //alert(pt.lng + "," + pt.lat);
+            if (pt.lat<39.9919 || pt.lat>40.0031 || pt.lng<116.3082 || pt.lng>116.3225){    // Outside
+
+              var point = new BMap.Point(pt.lng, pt.lat);
+              var marker = new BMap.Marker(point);
+              map.addOverlay(marker);
+
+              // Delete old marker
+              if(oldmarker != null)
+                oldmarker.remove();
+              oldmarker = marker;
+          
+              var url = "aqi_js.py?lat=" + pt.lat + "&lng=" + pt.lng;
+              //alert(url);
+              var geoc = new BMap.Geocoder();
+              
+              geoc.getLocation(pt, function(rs){
+                var addComp = rs.addressComponents;
+                // alert(addComp.province+", "+addComp.city+", "+addComp.district+", "+addComp.street+", "+addComp.streetNumber);
+                url += "&province="+addComp.province+"&city="+addComp.city+"&district="+addComp.district+"&street="+addComp.street+"&streetNumber="+addComp.streetNumber;
+                // alert(url);
+
+                $.get(url,function(data,status){
+                  alert("数据："+data+"\n状态："+status);
+
+                  var obj = eval('('+data+')');
+                  var aqi = obj.aqi;
+                  // alert(aqi);
+                  // alert(obj.province);
+                  var sConent = "<h4 style='margin:0 0 5px 0; padding:0.2em 0'>AQI " + aqi + "</h4><div style='height:auto; width:270px;'>"
+                                + "<img style='float:right; margin:0px' src='" + obj.image + "' width='139' height='104' />"
+                                + "<p style='margin:0; font-size:13px; line-height:1.5; float:left'> City: " + addComp.city + "<br />"
+                                + "District: " + addComp.district + "<br />"
+                                + "Street: " + addComp.street + "</p>" + "</div>";
+                  var infoWindow = new BMap.InfoWindow(sConent);
+                  marker.openInfoWindow(infoWindow);
+
+                });
+              });
+            }
+            else{    // Inside
+              // Calculate the nearest place in favor
+              var min=100000, index;
+              for (var i=0; i<data_info.length; i++){
+                var dis_now = Math.sqrt(Math.pow(pt.lng - data_info[i][0],2) + Math.pow(pt.lat - data_info[i][1],2));
+                if (dis_now < min){
+                  min = dis_now;
+                  index = i;
+                }
+              }
+              //alert(index);
+              
+              var type = "now";
+              var options = {
+                url:'/index_query_district',
+                type:'get',
+                data:{'district_id':index,'type':type},
+                dataType:'json',
+                success:function(dp_list) {
+                  console.log('获得地点参数信息答复');
+                  // dp_list = JSON.parse(dp_list);
+                  if (dp_list.err){
+                    console.error('查询地点参数信息错误');
+                    return;
+                  }
+                  // 音效提示
+                  success('成功查询到地点AQI');
+                  // 成功查询到地点AQI
+                  //$('#display').attr('district_id',district_id);
+                  
+                  render_aqi(dp_list);
+                },
+                error:get_error
+              };
+              $.ajax(options);
+            }
+          }
+          map.addEventListener("click", showInfo);
+
+
+
+          // 和query_btn绑定，点击后在map中呈现此处的AQI高度分布
+          // 渲染AQI参数表
+          function render_aqi(aqi_list) {
+            
+            var point = new BMap.Point(data_info[aqi_list[0].district_id][0], data_info[aqi_list[0].district_id][1]);
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+
+            // Delete old marker
+            if(oldmarker != null)
+              oldmarker.remove();
+            oldmarker = marker;
+
+            var aver=0, cnt=0;
+            for (i in aqi_list){
+              aver += aqi_list[i].aqi_value;
+              cnt++;
+            }
+
+            var sConent = "<h4 style='margin:0 0 5px 0; padding:0.2em 0'>" + aqi_list[0].district_name + "的实时AQI: " + aver/cnt
+                          + "</h4><div style='height:auto; width:350px;'>"
+                          + "<img style='float:right; margin:0px' src='img/" + aqi_list[0].district_name + ".jpg' width='250' height='150' />"
+                          + "<p style='margin:0; font-size:13px; line-height:1.5; float:left'> Floor #1: " + aqi_list[0].aqi_value + "<br />"
+                          + "Floor #2: " + aqi_list[1].aqi_value + "<br />"
+                          + "Floor #3: " + aqi_list[2].aqi_value + "<br />"
+                          + "Floor #4: " + aqi_list[3].aqi_value + "<br />"
+                          + "Floor #5: " + aqi_list[4].aqi_value
+                          //+ "<p style='margin:0; font-size:13px; line-height:1.5; float:left'> City: " + addComp.city + "<br />"
+                          //+ "District: " + addComp.district + "<br />"
+                          //+ "Street: " + addComp.street
+                          + "</p>" + "</div>";
+
+            var infoWindow = new BMap.InfoWindow(sConent);
+            marker.openInfoWindow(infoWindow);
+            
+          }
 
       </script>
 
@@ -153,7 +238,7 @@
           <p class="form-control-static">查询方式</p>
           <select id="type_select" class="form-control" name="type">
             <option value="now">实时</option>
-            <option value="average">日平均</option>
+            <!--<option value="average">日平均</option>-->
           </select>
         </div>
         <div class="form-group col-md-offset-4 col-md-1 col-sm-offset-1 col-sm-1">
