@@ -60,7 +60,7 @@
         <a class="navbar-text navbar-link navbar-left" href="./index.html">
           <button class="btn btn-default btn-sm" role="button">
             <span class="glyphicon glyphicon-home"></span>
-            <strong><span style="font-family: Georgia;">Home</span></strong>
+            <!--<strong><span style="font-family: Georgia;">Home</span></strong>-->
           </button>
         </a>
         
@@ -205,18 +205,69 @@
               cnt++;
             }
 
+            // 这里用来根据返回的楼层数动态生成右侧高度图,暂时默认5层
+            var building = 5;
+            var high = 150 / building;
+            var height_diff = "";
+            for(var i = 0; i < building; i ++) {
+              var aqi = aqi_list[i].aqi_value;
+              var blue, green, red;
+              if(aqi <= 50) {
+                blue = Math.round((56 - 47) * aqi / 50 + 47);
+                green = 254;
+                red = Math.round((255 - 41) * aqi / 50 + 41);
+              }
+              if(aqi > 50 && aqi <= 100) {
+                blue = Math.round((39 - 56) * (aqi - 50) / 50 + 56);
+                green = Math.round((153 - 254) * (aqi - 50) / 50 + 254);
+                red = Math.round((254 - 255) * (aqi - 50) / 50 + 255);
+              }
+              if(aqi > 100 && aqi <= 150) {
+                blue = Math.round((27 - 39) * (aqi - 100) / 50 + 39);
+                green = Math.round((13 - 153) * (aqi - 100) / 50 + 153);
+                red = Math.round((253 - 254) * (aqi - 100) / 50 + 254);
+              }
+              if(aqi > 150 && aqi <= 200) {
+                blue = Math.round((126 - 27) * (aqi - 150) / 50 + 27);
+                green = Math.round((15 - 13) * (aqi - 150) / 50 + 13);
+                red = Math.round((128 - 254) * (aqi - 150) / 50 + 254);
+              }
+              if(aqi > 200 && aqi <= 300) {
+                blue = Math.round((8 - 126) * (aqi - 200) / 100 + 126);
+                green = Math.round((3 - 15) * (aqi - 200) / 100 + 15);
+                red = Math.round((127 - 128) * (aqi - 200) / 100 + 128);
+              }
+              if(aqi > 300) {
+                blue = 8;
+                green = 3;
+                red = 127;
+              }
+              var temp = "";
+              red = red.toString(16);
+              if(red.length == 1)
+                red = "0" + red;
+              green = green.toString(16);
+              if(green.length == 1)
+                green = "0" + green;
+              blue = blue.toString(16);
+              if(blue.length == 1)
+                blue = "0" + blue;
+              temp = red + green + blue;
+              height_diff = "<tr style='height:"+ high +";background-color:#" + temp + "'><td>"+ aqi +"</td></tr>" + height_diff;
+            }
+
             var sConent = "<h4 style='margin:0 0 5px 0; padding:0.2em 0'>" + aqi_list[0].district_name + "的实时AQI: " + aver/cnt
                           + "</h4><div style='height:auto; width:350px;'>"
                           + "<img style='float:right; margin:0px' src='img/" + aqi_list[0].district_name + ".jpg' width='250' height='150' />"
+                          + "<div style='float:left'><table style='width:80px; height:150px; text-align:center; font-size:80%'>" + height_diff + "</table></div>";
+                          /*
                           + "<p style='margin:0; font-size:13px; line-height:1.5; float:left'> Floor #1: " + aqi_list[0].aqi_value + "<br />"
                           + "Floor #2: " + aqi_list[1].aqi_value + "<br />"
                           + "Floor #3: " + aqi_list[2].aqi_value + "<br />"
                           + "Floor #4: " + aqi_list[3].aqi_value + "<br />"
                           + "Floor #5: " + aqi_list[4].aqi_value
-                          //+ "<p style='margin:0; font-size:13px; line-height:1.5; float:left'> City: " + addComp.city + "<br />"
-                          //+ "District: " + addComp.district + "<br />"
-                          //+ "Street: " + addComp.street
                           + "</p>" + "</div>";
+                          */
 
             var infoWindow = new BMap.InfoWindow(sConent);
             marker.openInfoWindow(infoWindow);
