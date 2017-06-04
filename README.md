@@ -6,8 +6,6 @@ This is a dynamic webpage that presents our collecting-datas timely in one of my
 -->
 This is a dynamic webpage that presents the realtime AQI maps of Peking University, including both 3D (3-dimentional) and 2D (2-dimentional).
 
-The project now serves as a demo for a junior course __Computer Networking__.
-
 It consists of client, server and database.  ~~Somehow it's not complete because I'M STILL WORKING ON IT...~~
 
 ## Client
