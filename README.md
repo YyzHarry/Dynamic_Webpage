@@ -9,7 +9,7 @@ This is a dynamic webpage that presents the realtime AQI maps of Peking Universi
 It consists of client, server and database.  ~~Somehow it's not complete because I'M STILL WORKING ON IT...~~
 
 ## Client
-The client is implemented by HTML/CSS and javascript. We use _Bootstrap_ and _jQuery_ to simplify the process.
+The client is implemented by HTML/CSS and JavaScript. We use _Bootstrap_ and _jQuery_ to simplify the process.
 
 ## Server
 The server is coded by Node.js and Express, as well as Python.
@@ -17,7 +17,9 @@ The server is coded by Node.js and Express, as well as Python.
 __Update__: We add ___Python___ files to real-timely scrape AQI data from _Moji_.
 
 ## Database
-The database I use is MySQL. It's easy and free to establish your databases through MySQL. 
+The database I use is MySQL. It's easy and free to establish your databases through MySQL.
+
+__Update__: We also add ___SQLite___ for images and AQI matching. MySQL and SQLite can be converted depend on needs.
 
 ## Usage
 * Run your __xx.sql__ file to establish your databases. Notice that you should first add your contents into your databases/tables.
